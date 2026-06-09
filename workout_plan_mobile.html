@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>8-Week Toning Plan</title>
+<style>
+  :root {
+    --push: #6C5CE7;
+    --pull: #00B894;
+    --legs: #E17055;
+    --opt:  #FDCB6E;
+    --opt-text: #7B5C00;
+    --dark: #1A1A2E;
+    --bg: #F7F7FB;
+    --card: #FFFFFF;
+    --text: #1A1A2E;
+    --muted: #888899;
+    --border: #E4E4EE;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.5;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 0 0 40px;
+  }
+  .hero {
+    background: var(--dark);
+    padding: 28px 20px 20px;
+    color: white;
+  }
+  .hero h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; margin-bottom: 4px; }
+  .hero p { font-size: 13px; color: #AAAACC; }
+  .pills { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+  .pill { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  .pill-push { background: var(--push); color: white; }
+  .pill-pull { background: var(--pull); color: white; }
+  .pill-legs { background: var(--legs); color: white; }
+  .pill-opt  { background: var(--opt);  color: var(--opt-text); }
+
+  .phase-tabs { display: flex; padding: 12px 16px 0; gap: 8px; }
+  .tab {
+    flex: 1; padding: 8px; text-align: center; border-radius: 10px;
+    font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s;
+  }
+  .tab-p1 { background: #EEEDFE; color: var(--push); }
+  .tab-p2 { background: #F1F1F1; color: var(--muted); }
+  .tab-p2.active { background: #FEF0ED; color: var(--legs); }
+  .tab-p1.inactive { background: #F1F1F1; color: var(--muted); }
+
+  .phase-note {
+    margin: 10px 16px 0; padding: 10px 14px; border-radius: 10px;
+    font-size: 12px; color: var(--muted); background: var(--card); border: 1px solid var(--border);
+  }
+  .phase-note strong { color: var(--text); }
+
+  .section-title {
+    padding: 18px 16px 6px; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.8px; color: var(--muted); text-transform: uppercase;
+  }
+
+  /* Quick reference table */
+  .quick-table {
+    margin: 0 16px 4px;
+    border-radius: 14px; overflow: hidden;
+    border: 1px solid var(--border); background: var(--card);
+  }
+  .qt-head {
+    display: grid; grid-template-columns: 28px 1fr 80px;
+    padding: 8px 14px; background: var(--dark);
+    font-size: 11px; font-weight: 700; color: #AAAACC; letter-spacing: 0.5px;
+    gap: 8px;
+  }
+  .qt-day-header {
+    display: grid; grid-template-columns: 28px 1fr 80px;
+    padding: 8px 14px; gap: 8px; align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .qt-day-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .qt-day-label { font-size: 12px; font-weight: 700; }
+  .qt-day-sub { font-size: 10px; color: var(--muted); }
+  .qt-ex-row {
+    display: grid; grid-template-columns: 28px 1fr 80px;
+    padding: 7px 14px; gap: 8px; align-items: center;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+  .qt-ex-row:last-child { border-bottom: none; }
+  .qt-num {
+    width: 18px; height: 18px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; color: white;
+  }
+  .qt-name { font-size: 13px; }
+  .qt-sets {
+    font-size: 11px; font-weight: 600; text-align: right;
+    padding: 2px 7px; border-radius: 6px; white-space: nowrap;
+  }
+
+  /* Session cards */
+  .session-card {
+    margin: 0 16px 12px; background: var(--card);
+    border-radius: 14px; overflow: hidden; border: 1px solid var(--border);
+  }
+  .session-head {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px; cursor: pointer;
+  }
+  .session-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .session-info { flex: 1; }
+  .session-name { font-size: 15px; font-weight: 700; }
+  .session-day  { font-size: 12px; color: var(--muted); margin-top: 1px; }
+  .chevron { font-size: 20px; color: var(--muted); transition: transform 0.2s; line-height: 1; }
+  .chevron.open { transform: rotate(90deg); }
+  .session-body { display: none; border-top: 1px solid var(--border); }
+  .session-body.open { display: block; }
+
+  .ex-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 11px 16px; border-bottom: 1px solid var(--border);
+  }
+  .ex-row:last-child { border-bottom: none; }
+  .ex-num {
+    width: 22px; height: 22px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px; color: white;
+  }
+  .ex-detail { flex: 1; min-width: 0; }
+  .ex-name-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .ex-name { font-size: 14px; font-weight: 600; }
+  .ex-sets {
+    display: inline-block; margin-top: 3px;
+    font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 6px;
+  }
+  .ex-tip { font-size: 12px; color: var(--muted); margin-top: 3px; }
+  .p2-change {
+    font-size: 11px; font-weight: 600; color: var(--legs);
+    background: #FEF0ED; padding: 1px 6px; border-radius: 4px;
+  }
+
+  /* Edit mode */
+  .edit-btn {
+    display: flex; align-items: center; gap: 6px;
+    margin: 0 16px 0; padding: 9px 14px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; font-size: 13px; font-weight: 600;
+    color: var(--muted); cursor: pointer; width: calc(100% - 32px);
+    justify-content: center; transition: all 0.15s;
+  }
+  .edit-btn:hover { border-color: var(--push); color: var(--push); }
+  .edit-btn.active { background: #EEEDFE; border-color: var(--push); color: var(--push); }
+  .edit-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+
+  .ex-edit-area { display: none; margin-top: 6px; }
+  .ex-edit-area.show { display: block; }
+  .ex-field {
+    width: 100%; border: 1px solid var(--border); border-radius: 8px;
+    padding: 6px 10px; font-size: 13px; font-family: inherit;
+    background: var(--bg); color: var(--text); margin-bottom: 4px;
+    resize: none;
+  }
+  .ex-field:focus { outline: none; border-color: var(--push); background: white; }
+  .field-label { font-size: 10px; color: var(--muted); font-weight: 600; letter-spacing: 0.4px; margin-bottom: 2px; }
+  .save-ex-btn {
+    padding: 5px 12px; border-radius: 8px; font-size: 12px; font-weight: 600;
+    background: var(--push); color: white; border: none; cursor: pointer; margin-top: 2px;
+  }
+
+  /* Tips */
+  .tip-card {
+    margin: 0 16px 10px; padding: 14px 16px; background: var(--card);
+    border-radius: 14px; border: 1px solid var(--border); font-size: 13px;
+  }
+  .tip-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.6px;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 4px;
+  }
+  .footer {
+    text-align: center; font-size: 11px; color: var(--muted); padding: 20px 16px 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>8-Week Toning Plan</h1>
+  <p>Push · Pull · Legs + Optional 4th day</p>
+  <div class="pills">
+    <span class="pill pill-push">Mon — Push</span>
+    <span class="pill pill-pull">Wed — Pull</span>
+    <span class="pill pill-legs">Fri — Legs</span>
+    <span class="pill pill-opt">Sat — Optional</span>
+  </div>
+</div>
+
+<div class="phase-tabs">
+  <button class="tab tab-p1" id="tab1" onclick="setPhase(1)">Phase 1 · Wks 1–4</button>
+  <button class="tab tab-p2" id="tab2" onclick="setPhase(2)">Phase 2 · Wks 5–8</button>
+</div>
+<div class="phase-note" id="phaseNote">
+  <strong>Foundation.</strong> Focus on form. Leave 3–4 reps in reserve. Rest 60–90s between sets.
+</div>
+
+<!-- Quick reference -->
+<div class="section-title">At a glance</div>
+<div class="quick-table">
+  <div class="qt-head"><div></div><div>EXERCISE</div><div style="text-align:right">SETS × REPS</div></div>
+  <div id="quickTable"></div>
+</div>
+
+<!-- Edit toggle -->
+<div style="padding: 14px 0 2px;">
+  <button class="edit-btn" id="editBtn" onclick="toggleEdit()">
+    <span class="edit-dot"></span> Edit exercises &amp; tips
+  </button>
+</div>
+
+<!-- Sessions -->
+<div class="section-title">Full session detail</div>
+
+<div class="session-card">
+  <div class="session-head" onclick="toggle('push')">
+    <div class="session-dot" style="background:var(--push)"></div>
+    <div class="session-info">
+      <div class="session-name" style="color:var(--push)">Push</div>
+      <div class="session-day">Monday · chest, shoulders, triceps</div>
+    </div>
+    <div class="chevron" id="chev-push">›</div>
+  </div>
+  <div class="session-body" id="body-push"><div id="push-exercises"></div></div>
+</div>
+
+<div class="session-card">
+  <div class="session-head" onclick="toggle('pull')">
+    <div class="session-dot" style="background:var(--pull)"></div>
+    <div class="session-info">
+      <div class="session-name" style="color:var(--pull)">Pull</div>
+      <div class="session-day">Wednesday · back, biceps, rear delts</div>
+    </div>
+    <div class="chevron" id="chev-pull">›</div>
+  </div>
+  <div class="session-body" id="body-pull"><div id="pull-exercises"></div></div>
+</div>
+
+<div class="session-card">
+  <div class="session-head" onclick="toggle('legs')">
+    <div class="session-dot" style="background:var(--legs)"></div>
+    <div class="session-info">
+      <div class="session-name" style="color:var(--legs)">Legs</div>
+      <div class="session-day">Friday · glutes, quads, hamstrings, calves</div>
+    </div>
+    <div class="chevron" id="chev-legs">›</div>
+  </div>
+  <div class="session-body" id="body-legs"><div id="legs-exercises"></div></div>
+</div>
+
+<div class="session-card">
+  <div class="session-head" onclick="toggle('opt')">
+    <div class="session-dot" style="background:var(--opt)"></div>
+    <div class="session-info">
+      <div class="session-name" style="color:var(--opt-text)">Optional</div>
+      <div class="session-day">Saturday · lower body + conditioning</div>
+    </div>
+    <div class="chevron" id="chev-opt">›</div>
+  </div>
+  <div class="session-body" id="body-opt"><div id="opt-exercises"></div></div>
+</div>
+
+<!-- Weekly grid -->
+<div class="section-title">8-Week Schedule</div>
+<div class="quick-table" style="margin-bottom:12px">
+  <div style="display:grid;grid-template-columns:36px 1fr 1fr 1fr 1fr;background:var(--dark);padding:8px 14px;gap:4px">
+    <div style="font-size:11px;font-weight:700;color:#AAAACC">WK</div>
+    <div style="font-size:11px;font-weight:700;color:#6C5CE7;text-align:center">MON</div>
+    <div style="font-size:11px;font-weight:700;color:#00B894;text-align:center">WED</div>
+    <div style="font-size:11px;font-weight:700;color:#E17055;text-align:center">FRI</div>
+    <div style="font-size:11px;font-weight:700;color:#FDCB6E;text-align:center">SAT</div>
+  </div>
+  <div style="grid-column:1/-1;background:#EEEDFE;padding:5px 14px;font-size:11px;font-weight:700;color:var(--push);letter-spacing:0.4px">PHASE 1 — Foundation</div>
+  <div id="weekGrid"></div>
+</div>
+
+<!-- Key rules -->
+<div class="section-title">Key Rules</div>
+<div class="tip-card"><div class="tip-label">Progressive overload</div>Add weight or 1 extra rep each week. Small increases compound over 8 weeks.</div>
+<div class="tip-card"><div class="tip-label">Reps in reserve (RIR)</div>Phase 1: stop 3–4 reps before failure. Phase 2: stop 1–2 reps before failure.</div>
+<div class="tip-card"><div class="tip-label">Rest between sets</div>Phase 1: 60–90 seconds. Phase 2: 45–75 seconds. Use your phone timer.</div>
+<div class="tip-card"><div class="tip-label">Form first, weight second</div>If form breaks down, reduce the weight. Bad form = no results + injury risk.</div>
+<div class="footer">Log weights in the Excel tracker · Aim for ~1.6–2g protein/kg bodyweight daily</div>
+
+<script>
+var data = {
+  push: {
+    color: '#6C5CE7',
+    p1: [
+      { name: 'Machine Chest Press', sets: '3 × 12',   tip: 'Elbows ~45° from torso, not flared wide' },
+      { name: 'Push-ups',            sets: '3 × 8–12',  tip: 'Knees ok if needed — full chest-to-floor range' },
+      { name: 'DB Shoulder Press',   sets: '3 × 12',   tip: 'Seated, core braced, don\'t arch lower back' },
+      { name: 'Tricep Pushdown',     sets: '3 × 12',   tip: 'Elbows pinned to sides throughout' },
+      { name: 'Plank',               sets: '3 × 30s',  tip: 'Squeeze glutes + abs. No sagging hips' }
+    ],
+    p2: [
+      { name: 'Machine Chest Press', sets: '4 × 10',   tip: 'Add weight vs Phase 1', isNew: true },
+      { name: 'Push-ups',            sets: '3 × 12–15', tip: 'Full range, chest touches floor', isNew: true },
+      { name: 'DB Shoulder Press',   sets: '3 × 10',   tip: 'Heavier than Phase 1', isNew: true },
+      { name: 'Tricep Pushdown',     sets: '3 × 15',   tip: 'Slow on the return — control it', isNew: true },
+      { name: 'Plank',               sets: '3 × 45s',  tip: 'Or elevate feet on bench for harder version', isNew: true }
+    ]
+  },
+  pull: {
+    color: '#00B894',
+    p1: [
+      { name: 'Wide-grip Lat Pulldown', sets: '3 × 12', tip: 'Pull elbows to back pockets, lean back slightly' },
+      { name: 'Close-grip Seated Row',  sets: '3 × 12', tip: 'Pause & squeeze shoulder blades at chest' },
+      { name: 'DB Bicep Curl',          sets: '3 × 12', tip: 'Supinate (rotate pinky out) at top for full contraction' },
+      { name: 'Lateral Raise',          sets: '3 × 15', tip: 'Light weight. Lead with elbows, not wrists' },
+      { name: 'Face Pull',              sets: '3 × 15', tip: 'W-shape at peak. Shoulder health — never skip this' }
+    ],
+    p2: [
+      { name: 'Wide-grip Lat Pulldown', sets: '4 × 10', tip: 'Add weight vs Phase 1', isNew: true },
+      { name: 'Close-grip Seated Row',  sets: '4 × 10', tip: 'Add weight vs Phase 1', isNew: true },
+      { name: 'DB Hammer Curl',         sets: '3 × 12', tip: 'Palms facing in — hits brachialis for arm thickness', isNew: true },
+      { name: 'Lateral Raise',          sets: '3 × 15', tip: 'Same weight, stricter form — no momentum' },
+      { name: 'Face Pull',              sets: '3 × 15', tip: 'Keep it light, full range of motion' }
+    ]
+  },
+  legs: {
+    color: '#E17055',
+    p1: [
+      { name: 'Goblet Squat',         sets: '3 × 12', tip: 'Chest tall, knees track over toes, hips below parallel' },
+      { name: 'Hip Thrust',           sets: '3 × 12', tip: '1s squeeze at top. Start with bodyweight to learn' },
+      { name: 'Romanian Deadlift',    sets: '3 × 10', tip: 'Hinge hips back, dumbbells close to legs' },
+      { name: 'Calf Raise',           sets: '3 × 15', tip: 'Full range — all the way up AND down' },
+      { name: 'Plank',                sets: '3 × 30s', tip: 'Can superset with calf raises to save time' }
+    ],
+    p2: [
+      { name: 'Goblet Squat',         sets: '4 × 10', tip: 'Heavier than Phase 1', isNew: true },
+      { name: 'Hip Thrust',           sets: '4 × 10', tip: 'Add plate or heavier dumbbell', isNew: true },
+      { name: 'Romanian Deadlift',    sets: '4 × 10', tip: 'Focus on feeling the hamstring stretch', isNew: true },
+      { name: 'Leg Curl (machine)',    sets: '3 × 12', tip: 'New in Phase 2 — slow eccentric (3s down)', isNew: true },
+      { name: 'Calf Raise',           sets: '3 × 20', tip: 'High rep, full stretch at bottom' }
+    ]
+  },
+  opt: {
+    color: '#FDCB6E',
+    colorText: '#7B5C00',
+    p1: [
+      { name: 'Hip Thrust',         sets: '3 × 15',   tip: 'Lighter — focus on glute squeeze quality' },
+      { name: 'Goblet Squat',       sets: '3 × 12',   tip: 'Bodyweight or very light' },
+      { name: 'Glute Bridge',       sets: '3 × 15',   tip: 'Bodyweight. Great for glute activation' },
+      { name: 'DB Shoulder Press',  sets: '3 × 12',   tip: 'Upper body complement to the lower focus' },
+      { name: 'Circuit Finisher',   sets: '3 rounds', tip: 'Squat×10 → Row×10 → Mountain climbers×20. 90s rest between rounds' }
+    ],
+    p2: [
+      { name: 'Hip Thrust',         sets: '3 × 15',   tip: 'Slightly heavier than Phase 1 optional', isNew: true },
+      { name: 'Sumo Squat',         sets: '3 × 12',   tip: 'Wide stance, toes out 45° — targets inner thighs + glutes', isNew: true },
+      { name: 'Glute Bridge',       sets: '3 × 20',   tip: 'Add a dumbbell on your hips', isNew: true },
+      { name: 'Lateral Raise',      sets: '3 × 15',   tip: 'Superset with shoulder press to save time', isNew: true },
+      { name: 'Circuit Finisher',   sets: '4 rounds', tip: 'Squat×12 → Row×10 → Mountain climbers×25. 90s rest', isNew: true }
+    ]
+  }
+};
+
+var phase = 1;
+var editMode = false;
+var openSessions = {};
+
+// ── Phase toggle ────────────────────────────────────────────────────────────
+function setPhase(p) {
+  phase = p;
+  document.getElementById('tab1').className = 'tab tab-p1' + (p === 1 ? '' : ' inactive');
+  document.getElementById('tab2').className = 'tab tab-p2' + (p === 2 ? ' active' : '');
+  document.getElementById('phaseNote').innerHTML = p === 1
+    ? '<strong>Foundation.</strong> Focus on form. Leave 3–4 reps in reserve. Rest 60–90s between sets.'
+    : '<strong>Development.</strong> Increase weight each week. Some exercises rotate for variety. Rest 45–75s. Leave 1–2 reps in reserve.';
+  renderAll();
+}
+
+// ── Edit mode ───────────────────────────────────────────────────────────────
+function toggleEdit() {
+  editMode = !editMode;
+  var btn = document.getElementById('editBtn');
+  btn.className = 'edit-btn' + (editMode ? ' active' : '');
+  btn.innerHTML = editMode
+    ? '<span class="edit-dot"></span> Done editing'
+    : '<span class="edit-dot"></span> Edit exercises &amp; tips';
+  // Re-render open sessions
+  ['push','pull','legs','opt'].forEach(function(key) {
+    if (openSessions[key]) renderSession(key);
+  });
+}
+
+function saveExercise(sessionKey, idx) {
+  var phKey = phase === 1 ? 'p1' : 'p2';
+  var nameEl = document.getElementById('edit-name-' + sessionKey + '-' + idx);
+  var setsEl = document.getElementById('edit-sets-' + sessionKey + '-' + idx);
+  var tipEl  = document.getElementById('edit-tip-'  + sessionKey + '-' + idx);
+  if (nameEl) data[sessionKey][phKey][idx].name = nameEl.value;
+  if (setsEl) data[sessionKey][phKey][idx].sets = setsEl.value;
+  if (tipEl)  data[sessionKey][phKey][idx].tip  = tipEl.value;
+  renderSession(sessionKey);
+  renderQuickTable();
+}
+
+// ── Render quick table ──────────────────────────────────────────────────────
+var sessionOrder = ['push','pull','legs','opt'];
+var sessionMeta = {
+  push: { label: 'Day 1 — Push',     day: 'Monday', color: '#6C5CE7' },
+  pull: { label: 'Day 2 — Pull',     day: 'Wednesday', color: '#00B894' },
+  legs: { label: 'Day 3 — Legs',     day: 'Friday', color: '#E17055' },
+  opt:  { label: 'Day 4 — Optional', day: 'Saturday', color: '#FDCB6E', textColor: '#7B5C00' }
+};
+
+function renderQuickTable() {
+  var phKey = phase === 1 ? 'p1' : 'p2';
+  var html = '';
+  sessionOrder.forEach(function(key) {
+    var meta = sessionMeta[key];
+    var exs = data[key][phKey];
+    var tc = meta.textColor || meta.color;
+    html += '<div class="qt-day-header" style="background:white">'
+      + '<div class="qt-day-dot" style="background:' + meta.color + '"></div>'
+      + '<div><div class="qt-day-label" style="color:' + tc + '">' + meta.label + '</div>'
+      + '<div class="qt-day-sub">' + meta.day + '</div></div>'
+      + '<div></div></div>';
+    exs.forEach(function(ex, i) {
+      html += '<div class="qt-ex-row">'
+        + '<div class="qt-num" style="background:' + meta.color + '">' + (i + 1) + '</div>'
+        + '<div class="qt-name">' + ex.name + '</div>'
+        + '<div class="qt-sets" style="background:' + meta.color + '22;color:' + tc + '">' + ex.sets + '</div>'
+        + '</div>';
+    });
+  });
+  document.getElementById('quickTable').innerHTML = html;
+}
+
+// ── Render session detail ───────────────────────────────────────────────────
+function renderSession(key) {
+  var d = data[key];
+  var phKey = phase === 1 ? 'p1' : 'p2';
+  var exs = d[phKey];
+  var color = d.color;
+  var tc = d.colorText || color;
+  var container = document.getElementById(key + '-exercises');
+  var html = '';
+  exs.forEach(function(e, i) {
+    var uid = key + '-' + i;
+    html += '<div class="ex-row">'
+      + '<div class="ex-num" style="background:' + color + '">' + (i + 1) + '</div>'
+      + '<div class="ex-detail">'
+      + '<div class="ex-name-row">'
+      + '<span class="ex-name">' + e.name + '</span>'
+      + (e.isNew && phase === 2 ? '<span class="p2-change">↻ new</span>' : '')
+      + '</div>'
+      + '<div class="ex-sets" style="background:' + color + '22;color:' + tc + '">' + e.sets + '</div>'
+      + '<div class="ex-tip">' + e.tip + '</div>';
+
+    if (editMode) {
+      html += '<div class="ex-edit-area show">'
+        + '<div class="field-label">EXERCISE NAME</div>'
+        + '<input class="ex-field" id="edit-name-' + uid + '" value="' + e.name.replace(/"/g,'&quot;') + '">'
+        + '<div class="field-label">SETS &times; REPS</div>'
+        + '<input class="ex-field" id="edit-sets-' + uid + '" value="' + e.sets + '">'
+        + '<div class="field-label">TIP</div>'
+        + '<textarea class="ex-field" id="edit-tip-' + uid + '" rows="2">' + e.tip + '</textarea>'
+        + '<button class="save-ex-btn" onclick="saveExercise(\'' + key + '\',' + i + ')">Save</button>'
+        + '</div>';
+    }
+
+    html += '</div></div>';
+  });
+  container.innerHTML = html;
+}
+
+// ── Session accordion ───────────────────────────────────────────────────────
+function toggle(key) {
+  openSessions[key] = !openSessions[key];
+  document.getElementById('body-' + key).className = 'session-body' + (openSessions[key] ? ' open' : '');
+  document.getElementById('chev-' + key).className = 'chevron' + (openSessions[key] ? ' open' : '');
+  if (openSessions[key]) renderSession(key);
+}
+
+// ── Week grid ───────────────────────────────────────────────────────────────
+function renderWeekGrid() {
+  var notes = ['Nail the form — go light','Add weight if form was perfect','Last 2 reps should feel hard','Final phase 1 week — note your weights','New exercises in Phase 2 — reset weights slightly','Add weight again','Push to 1-2 reps in reserve','Final week — log your PRs'];
+  var html = '';
+  for (var w = 1; w <= 8; w++) {
+    var isP2 = w > 4;
+    if (w === 5) {
+      html += '<div style="grid-column:1/-1;background:#FEF0ED;padding:5px 14px;font-size:11px;font-weight:700;color:var(--legs);letter-spacing:0.4px;display:block">PHASE 2 — Development</div>';
+    }
+    html += '<div style="display:grid;grid-template-columns:36px 1fr 1fr 1fr 1fr;padding:8px 14px;gap:4px;border-bottom:1px solid var(--border);align-items:center' + (isP2 ? ';border-left:3px solid #E17055' : '') + '">'
+      + '<div style="font-size:13px;font-weight:700">' + w + '</div>'
+      + '<div style="font-size:11px;font-weight:600;color:#6C5CE7;text-align:center;background:#EEEDFE;border-radius:6px;padding:3px 2px">Push</div>'
+      + '<div style="font-size:11px;font-weight:600;color:#00B894;text-align:center;background:#E6FAF5;border-radius:6px;padding:3px 2px">Pull</div>'
+      + '<div style="font-size:11px;font-weight:600;color:#E17055;text-align:center;background:#FEF0ED;border-radius:6px;padding:3px 2px">Legs</div>'
+      + '<div style="font-size:11px;font-weight:600;color:#7B5C00;text-align:center;background:#FFFAED;border-radius:6px;padding:3px 2px">Opt</div>'
+      + '</div>';
+  }
+  document.getElementById('weekGrid').innerHTML = html;
+}
+
+function renderAll() {
+  renderQuickTable();
+  sessionOrder.forEach(function(key) {
+    if (openSessions[key]) renderSession(key);
+  });
+}
+
+renderQuickTable();
+renderWeekGrid();
+</script>
+</body>
+</html>
